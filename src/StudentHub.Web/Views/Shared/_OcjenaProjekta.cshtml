@@ -1,0 +1,26 @@
+@model StudentHub.Web.Models.ViewModels.FeedbackProjektaVm
+@*
+    TIM4-168 - prosjecna ocjena i broj ocjena projekta.
+    Samostalan partial da se moze staviti i u zaglavlje stranice detalja projekta.
+*@
+<div class="d-flex align-items-center gap-2">
+    @if (Model.BrojOcjena > 0 && Model.ProsjecnaOcjena.HasValue)
+    {
+        var prosjek = Model.ProsjecnaOcjena.Value;
+        <span class="fs-4 fw-semibold">@prosjek.ToString("0.00")</span>
+        <span class="text-warning fs-5" aria-hidden="true">
+            @for (var i = 1; i <= 5; i++)
+            {
+                @(i <= Math.Round(prosjek, MidpointRounding.AwayFromZero) ? "★" : "☆")
+            }
+        </span>
+        <span class="text-muted small">
+            @Model.BrojOcjena @(Model.BrojOcjena == 1 ? "ocjena" : Model.BrojOcjena < 5 ? "ocjene" : "ocjena")
+        </span>
+        <span class="visually-hidden">Prosjecna ocjena @prosjek.ToString("0.00") od 5, temeljem @Model.BrojOcjena ocjena.</span>
+    }
+    else
+    {
+        <span class="text-muted">Projekt jos nema ocjena.</span>
+    }
+</div>

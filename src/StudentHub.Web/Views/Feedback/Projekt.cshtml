@@ -1,0 +1,45 @@
+@model StudentHub.Web.Models.ViewModels.FeedbackProjektaVm
+@{
+    ViewData["Title"] = $"Feedback - {Model.ProjektNaziv}";
+    var korisnici = ViewBag.Korisnici as IEnumerable<dynamic> ?? Enumerable.Empty<dynamic>();
+    var trenutniId = (int)(ViewBag.TrenutniKorisnikId ?? 0);
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb small">
+        <li class="breadcrumb-item"><a asp-controller="Projekti" asp-action="Index">Projekti</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.ProjektNaziv</li>
+    </ol>
+</nav>
+
+<h1 class="mb-3">@Model.ProjektNaziv</h1>
+
+@* PRIVREMENO: dok prijava (TIM4-137) nije gotova, korisnik se bira rucno.
+   Kad prijava bude spojena, cijeli ovaj blok se brise. *@
+<div class="card border-warning bg-light mb-4">
+    <div class="card-body py-2">
+        <form asp-controller="Feedback" asp-action="DemoPrijava" method="post"
+              class="d-flex align-items-center gap-2 flex-wrap">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="projektId" value="@Model.ProjektId" />
+            <span class="badge bg-warning text-dark">privremeno</span>
+            <label class="form-label mb-0 small" for="demo-korisnik">Prijavljen kao</label>
+            <select class="form-select form-select-sm w-auto" id="demo-korisnik" name="korisnikId">
+                <option value="0" selected="@(trenutniId == 0)">- nitko -</option>
+                @foreach (var k in korisnici)
+                {
+                    <option value="@k.Id" selected="@(trenutniId == (int)k.Id)">@k.Ime</option>
+                }
+            </select>
+            <button type="submit" class="btn btn-sm btn-outline-secondary">Promijeni</button>
+            <span class="text-muted small ms-auto">zamijenit ce prava prijava (TIM4-137)</span>
+        </form>
+    </div>
+</div>
+
+@if (TempData["Poruka"] is string poruka)
+{
+    <div class="alert alert-success" role="status">@poruka</div>
+}
+
+<partial name="_FeedbackSekcija" model="Model" />

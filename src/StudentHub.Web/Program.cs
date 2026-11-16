@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using StudentHub.Web.Data;
+using StudentHub.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,23 @@ builder.Services.AddControllersWithViews();
 var conn = builder.Configuration.GetConnectionString("Default")
            ?? "Data Source=studenthub.db";
 builder.Services.AddDbContext<StudentHubDbContext>(o => o.UseSqlite(conn));
+
+// --- feedback na projektima (TIM4-41, TIM4-187) ---
+builder.Services.AddScoped<FeedbackServis>();
+
+// PRIVREMENO: dok prijava (TIM4-137) nije gotova, trenutni korisnik se cuva u sessionu.
+// Kad prijava bude spojena, mijenja se samo implementacija iza ITrenutniKorisnik.
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(o =>
+{
+    o.Cookie.HttpOnly = true;
+    o.Cookie.IsEssential = true;
+    o.IdleTimeout = TimeSpan.FromHours(8);
+});
+builder.Services.AddScoped<SessionTrenutniKorisnik>();
+builder.Services.AddScoped<ITrenutniKorisnik>(sp => sp.GetRequiredService<SessionTrenutniKorisnik>());
+builder.Services.AddScoped<IDemoPrijava>(sp => sp.GetRequiredService<SessionTrenutniKorisnik>());
 
 var app = builder.Build();
 
@@ -28,6 +46,7 @@ if (!app.Environment.IsDevelopment())
 }
 app.UseStaticFiles();
 app.UseRouting();
+app.UseSession();      // PRIVREMENO: nosi odabranog korisnika dok prijava nije gotova
 app.UseAuthorization();
 
 app.MapControllerRoute(
