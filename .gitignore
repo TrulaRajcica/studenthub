@@ -1,0 +1,22 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+.vscode/
+*.swp
+
+# Baza (nastaje lokalno iz migracija i seeda)
+*.db
+*.db-shm
+*.db-wal
+
+# Tajne i lokalna konfiguracija
+.env
+appsettings.Development.json
+appsettings.Local.json
+
+# OS
+.DS_Store
+Thumbs.db
