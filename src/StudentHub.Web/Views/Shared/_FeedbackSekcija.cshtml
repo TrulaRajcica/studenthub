@@ -1,0 +1,16 @@
+@model StudentHub.Web.Models.ViewModels.FeedbackProjektaVm
+@*
+    Cijeli feedback dio stranice projekta na jednom mjestu.
+
+    Kad stranica detalja projekta (TIM4-166) bude gotova, u nju se dodaje samo:
+        @await Html.PartialAsync("_FeedbackSekcija", feedbackVm)
+    gdje feedbackVm dolazi iz FeedbackServis.DohvatiZaProjektAsync(...).
+*@
+<section aria-label="Feedback na projektu">
+    <div class="mb-4">
+        <partial name="_OcjenaProjekta" model="Model" />
+    </div>
+
+    <partial name="_ObrazacFeedback" model="Model" />
+    <partial name="_ListaKomentara" model="Model" />
+</section>
