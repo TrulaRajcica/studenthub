@@ -21,6 +21,7 @@ public class ProjektiController : Controller
             .Include(p => p.Kategorija)
             .Include(p => p.Tagovi).ThenInclude(pt => pt.Tag)
             .OrderByDescending(p => p.DatumObjave)
+            .ThenByDescending(p => p.Id)   // DatumObjave je nullable, Id jamci stabilan redoslijed
             .ToListAsync();
 
         return View(projekti);
