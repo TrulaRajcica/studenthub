@@ -41,6 +41,21 @@ public static class SeedData
         db.Projekti.AddRange(projekti);
         db.SaveChanges();
 
+        // povezivanje projekata s tagovima (tagovi: 0 Java, 1 C#, 2 React, 3 Python, 4 SQL, 5 Flutter)
+        var veze = new (int Projekt, int[] Tagovi)[]
+        {
+            (0, new[] { 0, 4 }),
+            (1, new[] { 5 }),
+            (2, new[] { 3, 4 }),
+            (3, new[] { 1 }),
+            (4, new[] { 2, 1 }),
+            (5, new[] { 5 }),
+        };
+        foreach (var v in veze)
+            foreach (var t in v.Tagovi)
+                db.ProjektTagovi.Add(new ProjektTag { Projekt = projekti[v.Projekt], Tag = tagovi[t] });
+        db.SaveChanges();
+
         var komentari = new (int Projekt, Korisnik Autor, string Tekst, int Ocjena)[]
         {
             (0, ivan,  "Jako koristan projekt, sučelje je pregledno.", 5),
