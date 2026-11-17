@@ -1,0 +1,87 @@
+@model StudentHub.Web.Models.Projekt
+@{
+    ViewData["Title"] = Model.Naziv;
+
+    var (oznaka, boja) = Model.Status switch
+    {
+        StudentHub.Web.Models.StatusProjekta.Zavrsen   => ("Završen", "bg-success"),
+        StudentHub.Web.Models.StatusProjekta.Arhiviran => ("Arhiviran", "bg-dark"),
+        _                                              => ("U izradi", "bg-info text-dark")
+    };
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb small">
+        <li class="breadcrumb-item">
+            <a asp-controller="Projekti" asp-action="Index" class="text-decoration-none">Projekti</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Naziv</li>
+    </ol>
+</nav>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <h1 class="mb-2">@Model.Naziv</h1>
+
+        <div class="mb-3">
+            <span class="badge bg-secondary">@Model.Kategorija?.Naziv</span>
+            <span class="badge @boja">@oznaka</span>
+        </div>
+
+        <p class="lead">@Model.Opis</p>
+
+        @if (Model.Tagovi.Any())
+        {
+            <h2 class="h6 text-muted mt-4">Tagovi i tehnologije</h2>
+            <div>
+                @foreach (var pt in Model.Tagovi)
+                {
+                    <span class="badge rounded-pill bg-light text-dark border me-1">@pt.Tag?.Naziv</span>
+                }
+            </div>
+        }
+
+        @* TIM4-41 / TIM4-187: kad se Tinova grana spoji u main, feedback se ukljucuje ovdje:
+           @await Html.PartialAsync("_FeedbackSekcija", feedbackVm)
+           gdje feedbackVm dolazi iz FeedbackServis.DohvatiZaProjektAsync(Model.Id, ...). *@
+    </div>
+
+    <aside class="col-lg-4">
+        <div class="card shadow-sm mb-3">
+            <div class="card-body">
+                <h2 class="h6 text-muted">Autor</h2>
+                <p class="mb-0 fw-semibold">@Model.Vlasnik?.PunoIme</p>
+                <p class="text-muted small mb-0">@Model.Vlasnik?.Email</p>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h6 text-muted">Statistika</h2>
+                <dl class="row mb-0 small">
+                    <dt class="col-7 fw-normal text-muted">Pregledi</dt>
+                    <dd class="col-5 text-end mb-1">@Model.BrojPregleda</dd>
+
+                    <dt class="col-7 fw-normal text-muted">Prosječna ocjena</dt>
+                    <dd class="col-5 text-end mb-1">
+                        @(Model.ProsjecnaOcjena.HasValue
+                            ? Model.ProsjecnaOcjena.Value.ToString("0.0") + " / 5"
+                            : "—")
+                    </dd>
+
+                    <dt class="col-7 fw-normal text-muted">Broj ocjena</dt>
+                    <dd class="col-5 text-end mb-1">@Model.BrojOcjena</dd>
+
+                    <dt class="col-7 fw-normal text-muted">Objavljen</dt>
+                    <dd class="col-5 text-end mb-0">
+                        @(Model.DatumObjave?.ToString("d. M. yyyy.") ?? "—")
+                    </dd>
+                </dl>
+            </div>
+        </div>
+
+        <a asp-controller="Projekti" asp-action="Index" class="btn btn-outline-secondary w-100 mt-3">
+            &larr; Natrag na listu
+        </a>
+    </aside>
+</div>
