@@ -1,17 +1,21 @@
 using Microsoft.EntityFrameworkCore;
 using StudentHub.Web.Models;
+using StudentHub.Web.Services;
 
 namespace StudentHub.Web.Data;
 
 public static class SeedData
 {
+    // Demo lozinka iz README-a; u bazi se nikad ne pohranjuje kao tekst, samo kao bcrypt hash.
+    private const string DemoLozinka = "Test123!";
+
     public static void Pokreni(StudentHubDbContext db)
     {
         if (db.Korisnici.Any()) return;   // seed ide samo u praznu bazu
 
-        var ana    = new Korisnik { Ime = "Ana",  Prezime = "Marić",   Email = "ana@algebra.hr",   LozinkaHash = "demo" };
-        var ivan   = new Korisnik { Ime = "Ivan", Prezime = "Novak",   Email = "ivan@algebra.hr",  LozinkaHash = "demo" };
-        var admin  = new Korisnik { Ime = "Admin", Prezime = "Sustav", Email = "admin@algebra.hr", LozinkaHash = "demo",
+        var ana    = new Korisnik { Ime = "Ana",  Prezime = "Marić",   Email = "ana@algebra.hr",   LozinkaHash = Lozinka.Hash(DemoLozinka) };
+        var ivan   = new Korisnik { Ime = "Ivan", Prezime = "Novak",   Email = "ivan@algebra.hr",  LozinkaHash = Lozinka.Hash(DemoLozinka) };
+        var admin  = new Korisnik { Ime = "Admin", Prezime = "Sustav", Email = "admin@algebra.hr", LozinkaHash = Lozinka.Hash(DemoLozinka),
                                     Uloga = UlogaKorisnika.Administrator };
         db.Korisnici.AddRange(ana, ivan, admin);
 
