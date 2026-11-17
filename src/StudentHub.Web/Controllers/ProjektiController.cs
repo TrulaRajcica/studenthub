@@ -26,4 +26,32 @@ public class ProjektiController : Controller
 
         return View(projekti);
     }
+
+    // GET /Projekti/Detalji/5
+    public async Task<IActionResult> Detalji(int id)
+    {
+        var projekt = await _db.Projekti
+            .Include(p => p.Vlasnik)
+            .Include(p => p.Kategorija)
+            .Include(p => p.Tagovi).ThenInclude(pt => pt.Tag)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (projekt is null)
+            return NotFound();
+
+        // Skice nisu javne. Dok prijava (TIM4-137) nije gotova, nitko ne moze
+        // dokazati da je vlasnik, pa se neobjavljeni projekt ne prikazuje nikome.
+        if (!projekt.JeObjavljen)
+            return NotFound();
+
+        // TIM4-167: brojac pregleda. Jedna ciljana naredba umjesto ucitavanja
+        // i spremanja cijelog entiteta.
+        await _db.Projekti
+            .Where(p => p.Id == id)
+            .ExecuteUpdateAsync(set => set.SetProperty(p => p.BrojPregleda, p => p.BrojPregleda + 1));
+
+        projekt.BrojPregleda += 1;   // da se povecanje odmah vidi na stranici
+
+        return View(projekt);
+    }
 }
