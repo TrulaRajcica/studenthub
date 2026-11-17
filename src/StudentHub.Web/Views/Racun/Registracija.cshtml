@@ -1,0 +1,46 @@
+@model StudentHub.Web.ViewModels.RegistracijaViewModel
+@{
+    ViewData["Title"] = "Registracija";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-5">
+        <h1 class="mb-1">Registracija</h1>
+        <p class="text-muted">Napravi račun i objavi svoje projekte ili ostavi feedback na tuđe.</p>
+        <hr class="mb-4" />
+
+        <form asp-action="Registracija" method="post">
+            <div class="row">
+                <div class="col-sm-6 mb-3">
+                    <label asp-for="Ime" class="form-label"></label>
+                    <input asp-for="Ime" class="form-control" autocomplete="given-name" />
+                    <span asp-validation-for="Ime" class="text-danger small"></span>
+                </div>
+                <div class="col-sm-6 mb-3">
+                    <label asp-for="Prezime" class="form-label"></label>
+                    <input asp-for="Prezime" class="form-control" autocomplete="family-name" />
+                    <span asp-validation-for="Prezime" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" type="email" autocomplete="email" />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Lozinka" class="form-label"></label>
+                <input asp-for="Lozinka" class="form-control" type="password" autocomplete="new-password" />
+                <div class="form-text">Najmanje 8 znakova, jedan broj i jedno veliko slovo.</div>
+                <span asp-validation-for="Lozinka" class="text-danger small"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Registriraj se</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
